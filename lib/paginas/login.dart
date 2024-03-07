@@ -74,6 +74,7 @@ class PaginaLogin extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 10),
 
             //Boton de registro
             MyButton(
