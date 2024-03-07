@@ -20,7 +20,7 @@ class MyButton extends StatelessWidget {
           padding: const EdgeInsets.all(25),
         ),
         child: const Text(
-          "Inicia sesión",
+          "Registrate",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

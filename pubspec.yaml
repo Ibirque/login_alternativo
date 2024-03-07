@@ -62,7 +62,9 @@ flutter:
   uses-material-design: true
    
   assets: 
-    - lib/assets/
+    - lib/assets/fav_icon.png
+    - lib/assets/iconogoogle.png
+    - lib/assets/Fondo.png
 
   #Para cargar los assets: 
   #Añadir lib/assets/background.jpg
