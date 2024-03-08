@@ -80,7 +80,7 @@ class PaginaSignUp extends StatelessWidget {
                       const SizedBox(height: 10),
                       MyTextField(
                         controller: passwordController,
-                        hintText: 'Seguridad Social',
+                        hintText: 'CIP Sanitario',
                         obscureText: true,
                       ),
 

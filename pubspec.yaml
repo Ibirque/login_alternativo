@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^2.25.5
+  firebase_core: ^2.27.0
   firebase_auth: ^4.17.6
 
 
@@ -65,6 +65,7 @@ flutter:
     - lib/assets/fav_icon.png
     - lib/assets/iconogoogle.png
     - lib/assets/Fondo.png
+    - lib/assets/logo_white.png
 
   #Para cargar los assets: 
   #Añadir lib/assets/background.jpg

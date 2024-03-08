@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_alternativo/componentes/my_button.dart';
 import 'package:login_alternativo/componentes/my_textfield.dart';
 import 'package:login_alternativo/componentes/square_tile.dart';
-import 'signup.dart';
+import 'sign_up.dart';
 import 'principal.dart';
 
 class PaginaLogin extends StatelessWidget {
@@ -20,7 +20,7 @@ class PaginaLogin extends StatelessWidget {
     //Navegar a la pagina principal
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PaginaPrincipal()), // Reemplaza PaginaPrincipal() con el nombre de tu clase principal
+      MaterialPageRoute(builder: (context) => const PaginaPrincipal()), // Reemplaza PaginaPrincipal() con el nombre de tu clase principal
     );
   }
 

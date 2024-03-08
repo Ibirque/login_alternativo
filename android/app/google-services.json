@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "426334946374",
+    "firebase_url": "https://multimediamoviles-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "multimediamoviles",
+    "storage_bucket": "multimediamoviles.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426334946374:android:316a93ca6e649004be7647",
+        "android_client_info": {
+          "package_name": "com.example.login_alternativo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0rQUp1AFP13RZu5JYjc8-XHAOXw-qyk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

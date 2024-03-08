@@ -1,9 +1,8 @@
-import 'sign_up.dart';
-
+import 'principal.dart';
 import 'package:flutter/material.dart';
 
-class PaginaPrincipal extends StatelessWidget {
-  const PaginaPrincipal({Key? key}) : super(key: key);
+class Perfil extends StatelessWidget {
+  const Perfil({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,25 +32,13 @@ class PaginaPrincipal extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              '¡Bienvenido a la página principal!',
-              style: TextStyle(fontSize: 24),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Agrega aquí la lógica para ir a la página de SignUp
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PaginaSignUp()),
-                );
-              },
-              child: const Text('Ir a SignUp'),
-            ),
+
+            
+
           ],
         ),
       ),
