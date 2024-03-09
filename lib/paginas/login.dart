@@ -35,7 +35,7 @@ class PaginaLogin extends StatelessWidget {
     //Aqui hacemos la autentificación de usuario
     try {      
       // print('Antes de signInWithEmailAndPassword');
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -120,6 +120,7 @@ class PaginaLogin extends StatelessWidget {
           ),
         ),
         child: Center(
+          //SingleChildScrollView - Para arreglar el overflow pixel
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

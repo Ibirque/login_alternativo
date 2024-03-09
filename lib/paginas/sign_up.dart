@@ -8,10 +8,16 @@ class PaginaSignUp extends StatelessWidget {
 
   // Controladores de edición de texto
   final TextEditingController usernameController = TextEditingController();
+  final TextEditingController apellidoControler = TextEditingController();
+  final TextEditingController cipController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController confirmEmailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+  
 
   // Método para iniciar sesión
-  void signUserIn() {}
+  void registrarUsuario() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -72,27 +78,27 @@ class PaginaSignUp extends StatelessWidget {
 
                       const SizedBox(height: 10),
                       MyTextField(
-                        controller: passwordController,
+                        controller: apellidoControler,
                         hintText: 'Apellido',
                         obscureText: true,
                       ),
 
                       const SizedBox(height: 10),
                       MyTextField(
-                        controller: passwordController,
+                        controller: cipController,
                         hintText: 'CIP Sanitario',
                         obscureText: true,
                       ),
 
                       const SizedBox(height: 10),
                       MyTextField(
-                        controller: passwordController,
+                        controller: emailController,
                         hintText: 'e-mail',
                         obscureText: true,
                       ),
                       const SizedBox(height: 10),
                       MyTextField(
-                        controller: passwordController,
+                        controller: confirmEmailController,
                         hintText: 'Confirmar e-mail',
                         obscureText: true,
                       ),
@@ -107,7 +113,7 @@ class PaginaSignUp extends StatelessWidget {
 
                       const SizedBox(height: 10),
                       MyTextField(
-                        controller: passwordController,
+                        controller: confirmPasswordController,
                         hintText: 'Confirmar Contraseña',
                         obscureText: true,
                       ),
@@ -115,7 +121,7 @@ class PaginaSignUp extends StatelessWidget {
                       const SizedBox(height: 5),
 
                       MyButton(
-                        onPressed: signUserIn,
+                        onPressed: registrarUsuario,
                       ),
 
                       //O continuar con:
