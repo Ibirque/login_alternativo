@@ -4,7 +4,7 @@ import 'package:login_alternativo/componentes/my_textfield.dart';
 import 'package:login_alternativo/componentes/square_tile.dart';
 
 class PaginaSignUp extends StatelessWidget {
-  PaginaSignUp({Key? key}) : super(key: key);
+  PaginaSignUp({super.key});
 
   // Controladores de edición de texto
   final TextEditingController usernameController = TextEditingController();

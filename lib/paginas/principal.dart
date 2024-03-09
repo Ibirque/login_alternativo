@@ -1,9 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'sign_up.dart';
 
 import 'package:flutter/material.dart';
 
 class PaginaPrincipal extends StatelessWidget {
-  const PaginaPrincipal({Key? key}) : super(key: key);
+  PaginaPrincipal({super.key});
+
+  final user = FirebaseAuth.instance.currentUser!;
+
+  //Cerrar sesion
+  void cerrarSesion() {
+    FirebaseAuth.instance.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +29,18 @@ class PaginaPrincipal extends StatelessWidget {
           IconButton(
             icon: ColorFiltered(
               colorFilter: ColorFilter.mode(
-                Colors.blue.withOpacity(0.5), // Cambia el color y la opacidad según sea necesario
-                BlendMode.overlay, // Cambia el modo de fusión según sea necesario
+                Colors.blue.withOpacity(
+                    0.5), // Cambia el color y la opacidad según sea necesario
+                BlendMode
+                    .overlay, // Cambia el modo de fusión según sea necesario
               ),
               child: const CircleAvatar(
                 backgroundImage: AssetImage('lib/assets/fav_icon.png'),
               ),
             ),
             onPressed: () {
-              // Lógica para mostrar un menú emergente o realizar otra acción
+              //Menu desplegable
+              cerrarSesion();
             },
           ),
         ],
@@ -37,9 +49,10 @@ class PaginaPrincipal extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              '¡Bienvenido a la página principal!',
-              style: TextStyle(fontSize: 24),
+            Text(
+              // ignore: prefer_interpolation_to_compose_strings
+              "¡Bienvenido " +user.email!,
+              style: const TextStyle(fontSize: 24),
             ),
             const SizedBox(height: 20),
             ElevatedButton(

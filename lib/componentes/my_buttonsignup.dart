@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 class MyButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
+  // ignore: use_super_parameters
   const MyButton({Key? key, required this.onPressed}) : super(key: key);
 
   @override

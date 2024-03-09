@@ -1,34 +1,92 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_alternativo/componentes/my_button.dart';
 import 'package:login_alternativo/componentes/my_textfield.dart';
 import 'package:login_alternativo/componentes/square_tile.dart';
 import 'sign_up.dart';
-import 'principal.dart';
 
 class PaginaLogin extends StatelessWidget {
   PaginaLogin({super.key});
 
   //Controladores de edicion de texto
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   //sign user in method
-  void signUserIn(BuildContext context) {
+  void signUserIn(BuildContext context) async {
+    //circulo de carga
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
 
-
-
+    /*AUTENTICACION*/
+    // CODIGO VESTIGIAL, USAR SI NO HAY AUTH
     //Navegar a la pagina principal
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PaginaPrincipal()), // Reemplaza PaginaPrincipal() con el nombre de tu clase principal
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => const PaginaPrincipal()), // Reemplaza PaginaPrincipal() con el nombre de tu clase principal
+    // );
+
+    //Aqui hacemos la autentificación de usuario
+    try {      
+      // print('Antes de signInWithEmailAndPassword');
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-credential') {
+        //Mail erroneo
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+        // ignore: use_build_context_synchronously
+        emailErroneo(context);    
+      }       
+      //Debido a los nuevos updates de firebase/google, no debemos darle 
+      //datos a la gente de que credencial es la que esta fallando
+      // else if (e.code == 'wrong-password') {
+      //   //Password erroneo
+      //   // ignore: use_build_context_synchronously
+      //   passwordErroneo(context);
+      // }
+    }
+  }
+
+  void emailErroneo(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Usuario no reconocido'),
+        );
+      },
     );
   }
 
+  //ignoraremos passwordErroneo
+  // void passwordErroneo(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: Text('Contraseña incorrecta'),
+  //       );
+  //     },
+  //   );
+  // }
 
   //Transicion de página
-  void navegarRegistro(BuildContext context){
+  void navegarRegistro(BuildContext context) {
     Navigator.of(context).push(PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 500), // Duración de la animación
+      transitionDuration:
+          const Duration(milliseconds: 500), // Duración de la animación
       pageBuilder: (context, animation, secondaryAnimation) {
         return FadeTransition(
           opacity: animation,
@@ -50,7 +108,6 @@ class PaginaLogin extends StatelessWidget {
   AlignTransition
   PositionedTransition
   */
-
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +161,7 @@ class PaginaLogin extends StatelessWidget {
               const SizedBox(height: 25), //Separacion
               // Este campo esta creado en componentes->my_textfield.dart
               MyTextField(
-                controller: usernameController,
+                controller: emailController,
                 hintText: 'Username',
                 obscureText: false,
               ),
@@ -140,9 +197,9 @@ class PaginaLogin extends StatelessWidget {
 
               //Boton de registro
               MyButton(
-                onPressed: (){
+                onPressed: () {
                   signUserIn(context);
-                  },
+                },
               ),
 
               const SizedBox(height: 30),
@@ -195,16 +252,17 @@ class PaginaLogin extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                '¿No estas registrado?',
-                style: TextStyle(
-                  color: Colors.blueGrey[900],
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+                    '¿No estas registrado?',
+                    style: TextStyle(
+                      color: Colors.blueGrey[900],
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                   GestureDetector(
-                    onTap: () => navegarRegistro(context), // Usar la función para navegar con animación
+                    onTap: () => navegarRegistro(
+                        context), // Usar la función para navegar con animación
                     child: Text(
                       ' Registrate',
                       style: TextStyle(
