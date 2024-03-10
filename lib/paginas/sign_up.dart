@@ -5,6 +5,7 @@ import 'package:login_alternativo/componentes/square_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:login_alternativo/paginas/login.dart';
+import 'package:login_alternativo/main.dart';
 
 class PaginaSignUp extends StatelessWidget {
   PaginaSignUp({super.key});
@@ -16,7 +17,8 @@ class PaginaSignUp extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController confirmEmailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   // Método para iniciar sesión
   Future<bool> registrarUsuario(
@@ -25,7 +27,7 @@ class PaginaSignUp extends StatelessWidget {
     String cip,
     String email,
     String confirmPassword,
-  ) async {    
+  ) async {
     try {
       // Obtener los valores de los controladores de texto
       String username = usernameController.text;
@@ -63,7 +65,6 @@ class PaginaSignUp extends StatelessWidget {
       return false;
     }
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +181,7 @@ class PaginaSignUp extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PaginaLogin()),
+                                  builder: (context) => const MyApp()),
                             );
                           } else {
                             // fallo de registro
