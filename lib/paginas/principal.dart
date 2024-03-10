@@ -1,4 +1,5 @@
 import 'package:login_alternativo/componentes/my_drawer.dart';
+import 'package:login_alternativo/componentes/my_textbox.dart';
 import 'package:login_alternativo/paginas/perfil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +7,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'sign_up.dart';
 
 class PaginaPrincipal extends StatefulWidget {
+  // ignore: prefer_const_constructors_in_immutables, use_super_parameters
   PaginaPrincipal({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _PaginaPrincipalState createState() => _PaginaPrincipalState();
 }
 
@@ -42,7 +45,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
     if (option == 'Perfil') {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Perfil()),
+        MaterialPageRoute(builder: (context) => const Perfil()),
       );
     }
   }
@@ -64,7 +67,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
         ),
         centerTitle: true,
         iconTheme:
-            IconThemeData(color: Colors.white), // Color del icono del Drawer
+            const IconThemeData(color: Colors.white), // Color del icono del Drawer
       ),
       drawer: MyDrawer(
         onPerfil: () => _handleDrawerOptionSelected('Perfil'),
@@ -77,28 +80,64 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "¡Bienvenido ${user?.email}!",
-                style: const TextStyle(fontSize: 24),
+        child: ListView(
+          children: [
+            const SizedBox(height: 50),
+
+            //Otros detalles
+            const SizedBox(height: 10),
+            const Padding(
+              padding: EdgeInsets.only(left: 25.0),
+              child: Text(
+                'Mis visitas',
+                style: TextStyle(color: Colors.black),
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PaginaSignUp()),
-                  );
-                },
-                child: const Text('Ir a SignUp'),
+            ),
+
+            // Nombre de usuario
+            MyTextBox(
+              texto: 'Consulta de cabecera',
+              sectionName: 'Dra. Rovira',
+              onPressed: () => editfield('username'),
+            ),
+
+            // Apellido
+            MyTextBox(
+              texto: 'Oftalmologia',
+              sectionName: 'Dr. Sanchez',
+              onPressed: () => editfield('apellido'),
+            ),
+
+            const SizedBox(height: 20),
+            const Padding(
+              padding: EdgeInsets.only(left: 25.0),
+              child: Text(
+                'Resultados disponibles',
+                style: TextStyle(color: Colors.black),
               ),
-            ],
-          ),
+            ),
+           
+            MyTextBox(
+              texto: 'Consultar médico de cabecera',
+              sectionName: 'Radiografias',
+              onPressed: () => editfield('cip'),
+            ),
+            
+            MyTextBox(
+              texto: 'Consultar médico de cabecera',
+              sectionName: 'TAC',
+              onPressed: () => editfield('Sangre'),
+            ),
+
+            MyTextBox(
+              texto: 'Prueba de paternidad',
+              sectionName: 'Laboratorio',
+              onPressed: () => editfield('Sangre'),
+            ),
+          ],
         ),
       ),
     );
   }
+  Future<void> editfield(String field) async {}
 }

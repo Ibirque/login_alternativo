@@ -66,7 +66,7 @@ class PaginaSignUp extends StatelessWidget {
       return true;
     } catch (e) {
       // Manejar cualquier error
-      print('Error al registrar el usuario: $e');
+      // print('Error al registrar el usuario: $e');
       return false;
     }
   }

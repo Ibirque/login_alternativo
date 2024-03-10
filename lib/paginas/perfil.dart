@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:login_alternativo/componentes/my_textbox.dart';
 
 class Perfil extends StatefulWidget {
+  // ignore: use_key_in_widget_constructors
   const Perfil({Key? key});
 
   @override
@@ -37,6 +38,7 @@ class _Perfil extends State<Perfil> {
         _grupoSanguineo = userData.data()?['grupoSanguineo'];
       });
     } catch (error) {
+      // ignore: avoid_print
       print('Error al obtener la información del usuario: $error');
     }
   }
@@ -53,7 +55,7 @@ class _Perfil extends State<Perfil> {
         ),
         centerTitle: true,
         iconTheme:
-            IconThemeData(color: Colors.white), // Color del icono del Drawer
+            const IconThemeData(color: Colors.white), // Color del icono del Drawer
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -80,7 +82,7 @@ class _Perfil extends State<Perfil> {
             Text(
               currentUser.email!,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
 
             //Otros detalles
