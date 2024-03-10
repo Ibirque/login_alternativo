@@ -4,7 +4,7 @@ import 'package:login_alternativo/componentes/my_textfield.dart';
 import 'package:login_alternativo/componentes/square_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:login_alternativo/paginas/login.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:login_alternativo/main.dart';
 
 class PaginaSignUp extends StatelessWidget {
@@ -29,6 +29,10 @@ class PaginaSignUp extends StatelessWidget {
     String confirmPassword,
   ) async {
     try {
+      // Inicializar Firebase
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp();
+
       // Obtener los valores de los controladores de texto
       String username = usernameController.text;
       String apellido = apellidoControler.text;

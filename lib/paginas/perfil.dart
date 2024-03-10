@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login_alternativo/componentes/my_button.dart';
+import 'package:login_alternativo/componentes/my_textfield.dart';
+import 'package:login_alternativo/componentes/square_tile.dart';
+import 'sign_up.dart';
 
 class Perfil extends StatelessWidget {
   const Perfil({super.key});
@@ -6,41 +11,26 @@ class Perfil extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: const Text(
-          'Página Principal',
-          style: TextStyle(
-            fontSize: 20, // Tamaño del texto ajustado según sea necesario
+          "Perfil"
           ),
-        ),
-        centerTitle: true, // Centra el título en la AppBar
-        actions: [
-          IconButton(
-            icon: ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                Colors.blue.withOpacity(0.5), // Cambia el color y la opacidad según sea necesario
-                BlendMode.overlay, // Cambia el modo de fusión según sea necesario
-              ),
-              child: const CircleAvatar(
-                backgroundImage: AssetImage('lib/assets/fav_icon.png'),
-              ),
-            ),
-            onPressed: () {
-              // Lógica para mostrar un menú emergente o realizar otra acción
-            },
-          ),
+          backgroundColor: Colors.grey[900],
+      ),
+      body: ListView(
+        children: [
+          const SizedBox(height: 50),
+
+          //Imagen de perfil
+          //De momento usamos la imagen de metagenetics como imagen de perfil
+
+          //Email de usuario
+
+          //Otros detalles
         ],
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-
-            
-
-          ],
-        ),
-      ),
+      
     );
   }
 }
