@@ -1,36 +1,125 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login_alternativo/componentes/my_button.dart';
-import 'package:login_alternativo/componentes/my_textfield.dart';
-import 'package:login_alternativo/componentes/square_tile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:login_alternativo/componentes/my_textbox.dart';
 import 'sign_up.dart';
 
-class Perfil extends StatelessWidget {
-  const Perfil({super.key});
+class Perfil extends StatefulWidget {
+  const Perfil({Key? key});
+
+  @override
+  State<Perfil> createState() => _Perfil();
+}
+
+class _Perfil extends State<Perfil> {
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String? _username;
+  String? _apellido;
+  String? _cip;
+  String? _grupoSanguineo;
+
+  @override
+  void initState() {
+    super.initState();
+    obtenerInformacionUsuario();
+  }
+
+  Future<void> obtenerInformacionUsuario() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userData =
+          await _firestore.collection('usuarios').doc(currentUser.email).get();
+
+      setState(() {
+        _username = userData.data()?['username'];
+        _apellido = userData.data()?['apellido'];
+        _cip = userData.data()?['cip'];
+        _grupoSanguineo = userData.data()?['grupoSanguineo'];
+      });
+    } catch (error) {
+      print('Error al obtener la información del usuario: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        title: const Text(
-          "Perfil"
+        title: const Text("Perfil"),
+        backgroundColor: Colors.grey[900],
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("lib/assets/fondo2.png"),
+            fit: BoxFit.cover,
           ),
-          backgroundColor: Colors.grey[900],
+        ),
+        child: ListView(
+          children: [
+            const SizedBox(height: 50),
+
+            //Imagen de perfil
+            //De momento usamos la imagen de metagenetics como imagen de perfil
+            Center(
+              child: Image.asset(
+                'lib/assets/fav_icon.png',
+                width: 100,
+                height: 100,
+              ),
+            ),
+            //Email de usuario
+            const SizedBox(height: 10),
+            Text(
+              currentUser.email!,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[700]),
+            ),
+
+            //Otros detalles
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 25.0),
+              child: Text(
+                'Mi información',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ),
+
+            // Nombre de usuario
+            MyTextBox(
+              texto: _username ?? '',
+              sectionName: 'username',
+              onPressed: () => editfield('username'),
+            ),
+
+            // Apellido
+            MyTextBox(
+              texto: _apellido ?? '',
+              sectionName: 'apellido',
+              onPressed: () => editfield('apellido'),
+            ),
+
+            // Cip
+            MyTextBox(
+              texto: _cip ?? '',
+              sectionName: 'cip',
+              onPressed: () => editfield('cip'),
+            ),
+
+            // Grupo Sanguineo
+            MyTextBox(
+              texto: _grupoSanguineo ?? '',
+              sectionName: 'Grupo Sanguineo',
+              onPressed: () => editfield('Sangre'),
+            ),
+          ],
+        ),
       ),
-      body: ListView(
-        children: [
-          const SizedBox(height: 50),
-
-          //Imagen de perfil
-          //De momento usamos la imagen de metagenetics como imagen de perfil
-
-          //Email de usuario
-
-          //Otros detalles
-        ],
-      ),
-      
     );
   }
+
+  Future<void> editfield(String field) async {}
 }

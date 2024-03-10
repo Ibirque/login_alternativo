@@ -27,11 +27,11 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
   // Método para obtener el nombre de usuario del documento del usuario actual
   Future<void> getUsername() async {
     if (user != null) {
-      DocumentSnapshot<Map<String, dynamic>> userData =
-          await FirebaseFirestore.instance
-              .collection('usuarios')
-              .doc(user!.email)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore
+          .instance
+          .collection('usuarios')
+          .doc(user!.email)
+          .get();
 
       setState(() {
         _username = userData.data()?['username'];
@@ -62,12 +62,10 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black, // Fondo negro
-        title: Text(
-          _username ?? 'Usuario', // Si el nombre de usuario es nulo, muestra 'Usuario'
-          style: const TextStyle(
-            fontSize: 20,
-            color: Colors.white, // Texto blanco
-          ),
+        title: Image.asset(
+          'lib/assets/logo_white.png',
+          width: 200,
+          height: 80, // Ajusta la altura según tus preferencias
         ),
         centerTitle: true,
         actions: [
@@ -79,9 +77,10 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
               ),
               value: _selectedOption,
               onChanged: (String? newValue) {
-                if (newValue == 'Cerrar Sesión') {
-                  cerrarSesion(); // Cerrar sesión cuando se selecciona la opción correspondiente
-                }
+                setState(() {
+                  _selectedOption = newValue;
+                });
+                _handleOptionSelected(newValue!);
               },
               items: _options.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(

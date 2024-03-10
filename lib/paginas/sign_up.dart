@@ -46,6 +46,7 @@ class PaginaSignUp extends StatelessWidget {
         'apellido': apellido,
         'cip': cip,
         'email': email,
+        'grupoSanguineo': 'Pedir visita',
         // Agregar otros campos aquí si es necesario
       };
 
