@@ -1,3 +1,4 @@
+import 'package:login_alternativo/componentes/my_drawer.dart';
 import 'package:login_alternativo/paginas/perfil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +14,12 @@ class PaginaPrincipal extends StatefulWidget {
 
 class _PaginaPrincipalState extends State<PaginaPrincipal> {
   final User? user = FirebaseAuth.instance.currentUser;
-  String? _selectedOption; // Estado para la opción seleccionada
   String? _username; // Nombre de usuario
 
-  // Lista de opciones para el menú desplegable
-  final List<String> _options = ['Perfil', 'Cerrar Sesión'];
-
-  // Método para cerrar sesión
-  void cerrarSesion() {
-    FirebaseAuth.instance.signOut();
+  @override
+  void initState() {
+    super.initState();
+    getUsername();
   }
 
   // Método para obtener el nombre de usuario del documento del usuario actual
@@ -39,22 +37,19 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getUsername();
-  }
-
-  // Método para manejar la selección de una opción
-  void _handleOptionSelected(String option) {
+  // Método para manejar la selección de una opción en el Drawer
+  void _handleDrawerOptionSelected(String option) {
     if (option == 'Perfil') {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Perfil()),
       );
-    } else if (option == 'Cerrar Sesión') {
-      cerrarSesion(); // Cerrar sesión cuando se selecciona la opción correspondiente
     }
+  }
+
+  // Método para cerrar sesión
+  void cerrarSesion() {
+    FirebaseAuth.instance.signOut();
   }
 
   @override
@@ -68,29 +63,12 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
           height: 80, // Ajusta la altura según tus preferencias
         ),
         centerTitle: true,
-        actions: [
-          // DropdownButton personalizado con imagen como punto inicial
-          DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              icon: const CircleAvatar(
-                backgroundImage: AssetImage('lib/assets/fav_icon.png'),
-              ),
-              value: _selectedOption,
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedOption = newValue;
-                });
-                _handleOptionSelected(newValue!);
-              },
-              items: _options.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
+        iconTheme:
+            IconThemeData(color: Colors.white), // Color del icono del Drawer
+      ),
+      drawer: MyDrawer(
+        onPerfil: () => _handleDrawerOptionSelected('Perfil'),
+        onCerrar: cerrarSesion,
       ),
       body: Container(
         decoration: const BoxDecoration(

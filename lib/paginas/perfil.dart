@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:login_alternativo/componentes/my_textbox.dart';
-import 'sign_up.dart';
 
 class Perfil extends StatefulWidget {
   const Perfil({Key? key});
@@ -45,10 +44,16 @@ class _Perfil extends State<Perfil> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        title: const Text("Perfil"),
-        backgroundColor: Colors.grey[900],
+        backgroundColor: Colors.black, // Fondo negro
+        title: Image.asset(
+          'lib/assets/logo_white.png',
+          width: 200,
+          height: 80, // Ajusta la altura según tus preferencias
+        ),
+        centerTitle: true,
+        iconTheme:
+            IconThemeData(color: Colors.white), // Color del icono del Drawer
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -75,16 +80,16 @@ class _Perfil extends State<Perfil> {
             Text(
               currentUser.email!,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[700]),
+              style: TextStyle(color: Colors.black),
             ),
 
             //Otros detalles
             const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 25.0),
+            const Padding(
+              padding: EdgeInsets.only(left: 25.0),
               child: Text(
                 'Mi información',
-                style: TextStyle(color: Colors.grey[600]),
+                style: TextStyle(color: Colors.black),
               ),
             ),
 
