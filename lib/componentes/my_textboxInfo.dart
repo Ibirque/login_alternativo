@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-class MyTextBox extends StatelessWidget {
+class MyTextBoxInfo extends StatelessWidget {
   final String texto;
   final String sectionName;
   final void Function()? onPressed;
-  const MyTextBox({
+  final void Function()? onPressedStats;
+  const MyTextBoxInfo({
     super.key,
     required this.texto,
     required this.sectionName,
     required this.onPressed,
+    required this.onPressedStats,
   });
 
   @override
@@ -43,10 +45,22 @@ class MyTextBox extends StatelessWidget {
               ),
             ],
           ),
-          Text(
-            texto,
-            style: const TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                texto,
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                onPressed: onPressedStats,
+                icon: const Icon(
+                  Icons.stacked_line_chart,
+                  color: Colors.black,
+                ),
+              ),
+            ],
           ),
         ],
       ),

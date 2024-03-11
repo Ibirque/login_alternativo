@@ -1,9 +1,12 @@
 import 'package:login_alternativo/componentes/my_drawer.dart';
 import 'package:login_alternativo/componentes/my_textbox.dart';
+import 'package:login_alternativo/componentes/my_textboxInfo.dart';
 import 'package:login_alternativo/paginas/perfil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:login_alternativo/paginas/charts.dart';
+// ignore: unused_import
 import 'sign_up.dart';
 
 class PaginaPrincipal extends StatefulWidget {
@@ -55,6 +58,13 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
     FirebaseAuth.instance.signOut();
   }
 
+  void navigateToStatsPage() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => ChartsPage()),
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,8 +76,8 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
           height: 80, // Ajusta la altura según tus preferencias
         ),
         centerTitle: true,
-        iconTheme:
-            const IconThemeData(color: Colors.white), // Color del icono del Drawer
+        iconTheme: const IconThemeData(
+            color: Colors.white), // Color del icono del Drawer
       ),
       drawer: MyDrawer(
         onPerfil: () => _handleDrawerOptionSelected('Perfil'),
@@ -116,17 +126,18 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                 style: TextStyle(color: Colors.black),
               ),
             ),
-           
+
             MyTextBox(
               texto: 'Consultar médico de cabecera',
               sectionName: 'Radiografias',
               onPressed: () => editfield('cip'),
             ),
-            
-            MyTextBox(
-              texto: 'Consultar médico de cabecera',
-              sectionName: 'TAC',
+
+            MyTextBoxInfo(
+              texto: 'Resultados',
+              sectionName: 'Laboratorio',
               onPressed: () => editfield('Sangre'),
+              onPressedStats: navigateToStatsPage,
             ),
 
             MyTextBox(
@@ -139,5 +150,6 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
       ),
     );
   }
+
   Future<void> editfield(String field) async {}
 }
