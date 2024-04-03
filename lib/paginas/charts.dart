@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+//Resultados de sangre:
+/*
+https://cflvdg.avoz.es/default/2022/03/10/00161646932855292368139/Foto/analitica.jpg
+*/
+
+//Charts
+/*
+Stacked bar
+https://pub.dev/packages/syncfusion_flutter_charts
+*/
+
+
+
+//Posibles mejoras para las charts
+//Boton que permita añadir o eliminar campos a la grafica
+
 // Clase para representar los datos del gráfico
 class ChartSampleData {
   final String elemento;
@@ -39,9 +55,9 @@ final List<ChartSampleData> chartData = <ChartSampleData>[
       minimos: 7),
   ChartSampleData(
       elemento: 'Plaquetas / 10',
-      maximos: 45,
-      valoresUsuario: 5,
-      minimos: 13),
+      maximos: 450,
+      valoresUsuario: 50,
+      minimos: 130),
   ChartSampleData(
       elemento: 'Colesterol',
       maximos: 22,
