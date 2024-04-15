@@ -33,7 +33,11 @@ class MyTextBoxInfo extends StatelessWidget {
             children: [
               Text(
                 sectionName,
-                style: TextStyle(color: Colors.grey[500]),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold
+                ),
               ),
               //Boton de editar
               IconButton(
@@ -51,7 +55,10 @@ class MyTextBoxInfo extends StatelessWidget {
               Text(
                 texto,
                 style: const TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold),
+                    color: Colors.black, 
+                    fontWeight: FontWeight.w200,
+                    fontSize: 20,
+                    ),
               ),
               IconButton(
                 onPressed: onPressedStats,

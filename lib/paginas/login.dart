@@ -33,7 +33,7 @@ class PaginaLogin extends StatelessWidget {
     // );
 
     //Aqui hacemos la autentificación de usuario
-    try {      
+    try {
       // print('Antes de signInWithEmailAndPassword');
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
@@ -47,9 +47,9 @@ class PaginaLogin extends StatelessWidget {
         // ignore: use_build_context_synchronously
         Navigator.pop(context);
         // ignore: use_build_context_synchronously
-        emailErroneo(context);    
-      }       
-      //Debido a los nuevos updates de firebase/google, no debemos darle 
+        emailErroneo(context);
+      }
+      //Debido a los nuevos updates de firebase/google, no debemos darle
       //datos a la gente de que credencial es la que esta fallando
       // else if (e.code == 'wrong-password') {
       //   //Password erroneo
@@ -130,8 +130,8 @@ class PaginaLogin extends StatelessWidget {
               //Logo Metagenetics
               ColorFiltered(
                 colorFilter: ColorFilter.mode(
-                  Colors.white.withOpacity(
-                      0.30), // Cambia este color y opacidad según lo necesites
+                  Colors.black.withOpacity(
+                      0.10), // Cambia este color y opacidad según lo necesites
                   BlendMode
                       .overlay, // Cambia el modo de fusión según lo necesites
                 ),
@@ -148,13 +148,15 @@ class PaginaLogin extends StatelessWidget {
               ),
 
               //Bienvenida
+              //Cambiar color a blanco, tamaño de letra mas grande
+              //Revisar el login que nos da el mismo google
               const SizedBox(height: 50),
               Text(
                 'Bienvenido',
                 style: TextStyle(
-                  color: Colors.blueGrey[900],
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
 
@@ -185,8 +187,8 @@ class PaginaLogin extends StatelessWidget {
                     Text(
                       '¿Password olvidado?',
                       style: TextStyle(
-                        color: Colors.blueGrey[900],
-                        fontSize: 16,
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        fontSize: 20,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -221,7 +223,7 @@ class PaginaLogin extends StatelessWidget {
                       child: Text(
                         'O continua con',
                         style: TextStyle(
-                          color: Colors.blueGrey[900],
+                          color: Color.fromARGB(255, 255, 255, 255),
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
                         ),
@@ -252,10 +254,10 @@ class PaginaLogin extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     '¿No estas registrado?',
                     style: TextStyle(
-                      color: Colors.blueGrey[900],
+                      color: Color.fromARGB(255, 255, 255, 255),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -264,10 +266,10 @@ class PaginaLogin extends StatelessWidget {
                   GestureDetector(
                     onTap: () => navegarRegistro(
                         context), // Usar la función para navegar con animación
-                    child: Text(
+                    child: const Text(
                       ' Registrate',
                       style: TextStyle(
-                        color: Colors.lightBlue[900],
+                        color: const Color.fromARGB(255, 255, 255, 255),
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
                       ),

@@ -100,7 +100,12 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
               padding: EdgeInsets.only(left: 25.0),
               child: Text(
                 'Mis visitas',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),
+                
               ),
             ),
 
@@ -123,7 +128,11 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
               padding: EdgeInsets.only(left: 25.0),
               child: Text(
                 'Resultados disponibles',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  ),
               ),
             ),
 

@@ -55,9 +55,9 @@ final List<ChartSampleData> chartData = <ChartSampleData>[
       minimos: 7),
   ChartSampleData(
       elemento: 'Plaquetas / 10',
-      maximos: 450,
-      valoresUsuario: 50,
-      minimos: 130),
+      maximos: 45,
+      valoresUsuario: 5,
+      minimos: 13),
   ChartSampleData(
       elemento: 'Colesterol',
       maximos: 22,
@@ -82,7 +82,7 @@ class ChartsPage extends StatelessWidget {
               xValueMapper: (ChartSampleData sales, _) => sales.elemento,
               yValueMapper: (ChartSampleData sales, _) => sales.maximos,
               // Nombre de la primera serie
-              name: 'Niveles máximos',
+              name: 'Máximos',
               color: Colors.red,
             ),
             BarSeries<ChartSampleData, String>(
@@ -91,7 +91,7 @@ class ChartsPage extends StatelessWidget {
               xValueMapper: (ChartSampleData sales, _) => sales.elemento,
               yValueMapper: (ChartSampleData sales, _) => sales.valoresUsuario,
               // Nombre de la segunda serie
-              name: 'Valores del paciente',
+              name: 'Paciente',
               color: Colors.blue,
             ),
             BarSeries<ChartSampleData, String>(
@@ -100,7 +100,7 @@ class ChartsPage extends StatelessWidget {
               xValueMapper: (ChartSampleData sales, _) => sales.elemento,
               yValueMapper: (ChartSampleData sales, _) => sales.minimos,
               // Nombre de la tercera serie
-              name: 'Niveles minimos',
+              name: 'Minimos',
               color: Colors.amber,
             ),
           ],
