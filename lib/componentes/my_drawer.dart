@@ -29,16 +29,19 @@ class MyDrawer extends StatelessWidget{
             //Home
             MyListTile(
               icon: Icons.home,
-              text: 'H O G A R',
+              text: 'Hogar',
               onTap: () => Navigator.pop(context),
             ),
 
             //Perfil
             MyListTile(
               icon: Icons.person,
-              text: 'P E R F I L',
+              text: 'Perfil',
               onTap: onPerfil,
             ),
+
+            //Divisor
+            Divider(color: Colors.white),
 
             //Cerrar sesion
             MyListTile(
