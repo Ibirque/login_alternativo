@@ -93,7 +93,7 @@ class PaginaSignUp extends StatelessWidget {
                       // Logo de tu aplicación
                       ColorFiltered(
                         colorFilter: ColorFilter.mode(
-                          Colors.white.withOpacity(0.30),
+                          Colors.white.withOpacity(0.00),
                           BlendMode.overlay,
                         ),
                         child: Container(
@@ -113,9 +113,9 @@ class PaginaSignUp extends StatelessWidget {
                       Text(
                         'Bienvenido',
                         style: TextStyle(
-                          color: Colors.blueGrey[900],
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
                         ),
                       ),
 
@@ -211,9 +211,9 @@ class PaginaSignUp extends StatelessWidget {
                               child: Text(
                                 'O continua con',
                                 style: TextStyle(
-                                  color: Colors.blueGrey[900],
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w800,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
                             ),

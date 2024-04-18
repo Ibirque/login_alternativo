@@ -60,7 +60,7 @@ class _Perfil extends State<Perfil> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("lib/assets/fondo2.png"),
+            image: AssetImage("lib/assets/Fondo.png"),
             fit: BoxFit.cover,
           ),
         ),
