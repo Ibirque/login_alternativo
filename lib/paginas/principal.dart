@@ -1,9 +1,10 @@
-import 'package:login_alternativo/componentes/my_drawer.dart';
+import 'package:flutter/material.dart';
+import 'package:login_alternativo/componentes/bottom_navigation_bar.dart';
 import 'package:login_alternativo/componentes/my_textbox.dart';
+// import 'package:login_alternativo/componentes/my_drawer.dart';
 import 'package:login_alternativo/componentes/my_textboxInfo.dart';
 import 'package:login_alternativo/paginas/perfil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:login_alternativo/paginas/charts.dart';
 // ignore: unused_import
@@ -21,6 +22,7 @@ class PaginaPrincipal extends StatefulWidget {
 class _PaginaPrincipalState extends State<PaginaPrincipal> {
   final User? user = FirebaseAuth.instance.currentUser;
   String? _username; // Nombre de usuario
+  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -43,15 +45,17 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
     }
   }
 
+  /*DRAWER OLD */
+  
   // Método para manejar la selección de una opción en el Drawer
-  void _handleDrawerOptionSelected(String option) {
-    if (option == 'Perfil') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Perfil()),
-      );
-    }
-  }
+  // void _handleDrawerOptionSelected(String option) {
+  //   if (option == 'Perfil') {
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const Perfil()),
+  //     );
+  //   }
+  // }
 
   // Método para cerrar sesión
   void cerrarSesion() {
@@ -79,10 +83,13 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
         iconTheme: const IconThemeData(
             color: Colors.white), // Color del icono del Drawer
       ),
-      drawer: MyDrawer(
-        onPerfil: () => _handleDrawerOptionSelected('Perfil'),
-        onCerrar: cerrarSesion,
-      ),
+      
+      
+      // drawer: MyDrawer(
+      //   onPerfil: () => _handleDrawerOptionSelected('Perfil'),
+      //   onCerrar: cerrarSesion,
+      // ),
+
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -157,8 +164,29 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
           ],
         ),
       ),
+      bottomNavigationBar: MyBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+          if (index == 1) {
+            // Navegar a la página de perfil
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Perfil()),
+            );
+          } 
+        },
+      ),
+
+
+
+
+
     );
   }
+  
 
   Future<void> editfield(String field) async {}
 }
