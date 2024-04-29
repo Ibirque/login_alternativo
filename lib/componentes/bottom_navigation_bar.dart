@@ -51,6 +51,18 @@ class NavigationHandler {
           MaterialPageRoute(builder: (context) => Perfil()),
         );
         break;
+      // case 2:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => SolicitarCita()),
+      //   );
+      //   break;
+      // case 3:
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => Emergencia()),
+      //   );
+      //   break;
     }
   }
 }

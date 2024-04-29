@@ -120,11 +120,25 @@ class _PerfilState extends State<Perfil> {
             _currentIndex = index;
           });
           if (index == 0) {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => PaginaPrincipal()),
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 500),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    PaginaPrincipal(),
+              ),
             );
           }
+
+            
+          
         },
       ),
     );
