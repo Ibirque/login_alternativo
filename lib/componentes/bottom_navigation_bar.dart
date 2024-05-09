@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_alternativo/paginas/perfil.dart';
 import 'package:login_alternativo/paginas/principal.dart';
+import 'package:login_alternativo/paginas/solicitarVisita.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -21,11 +22,15 @@ class MyBottomNavigationBar extends StatelessWidget {
       destinations: const [
         NavigationDestination(
           icon: Icon(Icons.home),
-          label: 'Home',
+          label: 'Inicio',
         ),
         NavigationDestination(
           icon: Icon(Icons.person),
-          label: 'Profile',
+          label: 'Perfil',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.add_circle),
+          label: 'Cita',
         ),
       ],
     );
@@ -42,21 +47,52 @@ class NavigationHandler {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => PaginaPrincipal()),
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                PaginaPrincipal(),
+          ),
         );
         break;
       case 1:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Perfil()),
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            pageBuilder: (context, animation, secondaryAnimation) => Perfil(),
+          ),
         );
         break;
-      // case 2:
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => SolicitarCita()),
-      //   );
-      //   break;
+      case 2:
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            pageBuilder: (context, animation, secondaryAnimation) => SolicitarVisita(),
+          ),
+        );
+        break;
       // case 3:
       //   Navigator.push(
       //     context,

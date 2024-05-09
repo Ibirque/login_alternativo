@@ -62,7 +62,7 @@ class PaginaSignUp extends StatelessWidget {
           .doc(email)
           .set(userData);
 
-      // Registro exitoso, puedes navegar a otra página o mostrar un mensaje de éxito
+      // Registro exitoso
       return true;
     } catch (e) {
       // Manejar cualquier error

@@ -30,10 +30,8 @@ class _PerfilState extends State<Perfil> {
 
   Future<void> obtenerInformacionUsuario() async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> userData = await _firestore
-          .collection('usuarios')
-          .doc(currentUser.email)
-          .get();
+      DocumentSnapshot<Map<String, dynamic>> userData =
+          await _firestore.collection('usuarios').doc(currentUser.email).get();
 
       setState(() {
         _username = userData.data()?['username'];
@@ -113,34 +111,46 @@ class _PerfilState extends State<Perfil> {
           ],
         ),
       ),
+
+      /*Ir a home*/
       bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
           });
-          if (index == 0) {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 500),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  );
-                },
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    PaginaPrincipal(),
-              ),
-            );
-          }
 
-            
-          
+          // Dependiendo del índice seleccionado, navegamos a la página correspondiente
+          NavigationHandler navigationHandler = NavigationHandler(context);
+          navigationHandler.handleNavigation(index);
         },
       ),
+
+      // bottomNavigationBar: MyBottomNavigationBar(
+      //   currentIndex: _currentIndex,
+      //   onTap: (index) {
+      //     setState(() {
+      //       _currentIndex = index;
+      //     });
+      //     if (index == 0) {
+      //       Navigator.pushReplacement(
+      //         context,
+      //         PageRouteBuilder(
+      //           transitionDuration: const Duration(milliseconds: 500),
+      //           transitionsBuilder:
+      //               (context, animation, secondaryAnimation, child) {
+      //             return FadeTransition(
+      //               opacity: animation,
+      //               child: child,
+      //             );
+      //           },
+      //           pageBuilder: (context, animation, secondaryAnimation) =>
+      //               PaginaPrincipal(),
+      //         ),
+      //       );
+      //     }
+      //   },
+      // ),
     );
   }
 

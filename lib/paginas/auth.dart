@@ -12,7 +12,7 @@ class AuthPagina extends StatelessWidget {
       body: StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot){
-        //Si esta logeado el usuario
+        //Si esta logeado el usuario lo mandamos a la pagina principal, sino devolvemos a login
         if(snapshot.hasData){
           return PaginaPrincipal();
         }else{
