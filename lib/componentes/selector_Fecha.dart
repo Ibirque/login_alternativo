@@ -40,10 +40,10 @@ class _SelectorFechaState extends State<SelectorFecha> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(4),
         ),
         padding: const EdgeInsets.all(15), // Padding ajustado
-        margin: const EdgeInsets.symmetric(horizontal: 20), // Margen horizontal
+        margin: const EdgeInsets.symmetric(horizontal: 25), // Margen horizontal
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center, // Contenido centrado
           children: [

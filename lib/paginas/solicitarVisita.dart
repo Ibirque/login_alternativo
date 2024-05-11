@@ -214,6 +214,58 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
   }
 
   Future<void> _guardarSolicitud() async {
-    // Tu método _guardarSolicitud() aquí
+    try {
+      // Obtener los datos de la solicitud de visita
+      String ciudad = ciudadController.text;
+      String notas = notasController.text;
+
+      // Obtener la información del usuario
+      final User? user = currentUser;
+      final String? userId = user?.uid;
+      final DocumentSnapshot<Map<String, dynamic>> userData =
+          await _firestore.collection('usuarios').doc(user?.email).get();
+
+      // Obtener datos del usuario
+      String? _username = userData.data()?['username'];
+      String? _apellido = userData.data()?['apellido'];
+      String? _cip = userData.data()?['cip'];
+      String? _grupoSanguineo = userData.data()?['grupoSanguineo'];
+
+      // Guardar la reserva en la subcolección "Reservas" del doctor
+      if (doctorId != null &&
+          horariosSeleccionados != null &&
+          diaTrabajoSeleccionado != null) {
+        DocumentReference doctorRef =
+            FirebaseFirestore.instance.collection('Doctor').doc(doctorId);
+        CollectionReference reservasRef = doctorRef.collection('Reservas');
+        await reservasRef.add({
+          'fecha': DateTime.now(),
+          'horarios': horariosSeleccionados,
+          'notas': notas,
+          'ciudad': ciudad,
+          'tipo': tipoVisitaSeleccionada,
+          'userId': userId,
+          'usermail': currentUser.email,
+          'username': _username,
+          'apellido': _apellido,
+          'cip': _cip,
+          'grupoSanguineo': _grupoSanguineo,
+          'doctorId': doctorId,
+          'diaTrabajo': diaTrabajoSeleccionado,
+        });
+      }
+
+      // Notificar al usuario sobre el éxito de la solicitud
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Solicitud de visita guardada exitosamente')),
+      );
+    } catch (e) {
+      // Manejar cualquier error y notificar al usuario sobre el fallo de la solicitud
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Error al guardar la solicitud de visita')),
+      );
+    }
   }
 }
