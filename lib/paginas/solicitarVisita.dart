@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart'; // Importar este paquete para formatear la fecha
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:login_alternativo/componentes/bottom_navigation_bar.dart';
 import 'package:login_alternativo/componentes/my_textfield.dart';
 import 'package:login_alternativo/componentes/my_button.dart';
+
+//Selectores
+import 'package:login_alternativo/componentes/selector_Doctor.dart';
+import 'package:login_alternativo/componentes/selector_Dia.dart';
+import 'package:login_alternativo/componentes/selector_Horario.dart'; 
+import 'package:login_alternativo/componentes/selector_Fecha.dart'; 
 
 class SolicitarVisita extends StatefulWidget {
   const SolicitarVisita({Key? key}) : super(key: key);
@@ -14,25 +20,35 @@ class SolicitarVisita extends StatefulWidget {
 }
 
 class _SolicitarVisitaState extends State<SolicitarVisita> {
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController ciudadController = TextEditingController();
-  TextEditingController diaController = TextEditingController();
-  TextEditingController doctorController = TextEditingController();
-  TextEditingController horaController = TextEditingController();
   TextEditingController hospitalController = TextEditingController();
   TextEditingController notasController = TextEditingController();
-  TextEditingController tipoController = TextEditingController();
   int _currentIndex = 2;
 
+  //Dropdowns
   // Dropdown de ciudades
   List<String> ciudadesDisponibles = ['Barcelona', 'Madrid', 'Zaragoza'];
   String? ciudadSeleccionada;
-
+  String? doctorId;
   // Dropdown de tipos de visita
   List<String> tiposVisita = ['Primera visita', 'Urgencias'];
   String? tipoVisitaSeleccionada;
 
+
+  //Selectores
   // Doctor seleccionado
   String? doctorSeleccionado;
+  // Horarios seleccionados
+  List<String>? horariosSeleccionados;
+  // Días de trabajo seleccionados
+  String? diaTrabajoSeleccionado;
+  // Fecha seleccionada
+  DateTime? _fechaSeleccionada;
+
+  TextEditingController diaController =
+      TextEditingController(); // Nuevo controlador para la fecha
 
   @override
   Widget build(BuildContext context) {
@@ -110,83 +126,63 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
                       }).toList(),
                     ),
                   ),
+
+                  // Separador
                   const SizedBox(height: 20),
-                  Container(
-                    // Selector de fecha
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: TextField(
-                      controller: diaController,
-                      readOnly: true,
-                      onTap: () {
-                        _selectDate(
-                            context); // Llamar al método para seleccionar la fecha
-                      },
-                      decoration: InputDecoration(
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade400),
-                        ),
-                        fillColor: Colors.grey.shade200,
-                        filled: true,
-                        hintText: 'Día',
-                        hintStyle: const TextStyle(color: Colors.grey),
-                        prefixIcon: const Icon(Icons.calendar_today),
-                      ),
-                    ),
-                  ),
-                  MyTextField(
-                    controller: horaController,
-                    hintText: 'Hora',
-                    obscureText: false,
-                  ),
-                  MyTextField(
-                    controller: hospitalController,
-                    hintText: 'Centro de salud',
-                    obscureText: false,
-                  ),
-                  Container(
-                    // Selector de doctor
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance.collection('doctores').snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return const Text('Error al cargar los datos');
-                        }
 
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        }
-
-                        List<DropdownMenuItem<String>> items = [];
-                        snapshot.data!.docs.forEach((doc) {
-                          String nombreDoctor = doc['nombre'];
-                          items.add(DropdownMenuItem<String>(
-                            value: nombreDoctor,
-                            child: Text(nombreDoctor),
-                          ));
-                        });
-
-                        return DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Doctor',
-                            hintStyle: TextStyle(color: Colors.grey),
-                          ),
-                          value: doctorSeleccionado,
-                          onChanged: (newValue) {
-                            setState(() {
-                              doctorSeleccionado = newValue!;
-                            });
-                          },
-                          items: items,
-                        );
-                      },
-                    ),
+                  // Utilizando el DoctorSelector
+                  DoctorSelector(
+                    onChanged: (doctorData) {
+                      setState(() {
+                        doctorSeleccionado = doctorData['nombre'];
+                        doctorId = doctorData['id'];
+                        // Mandar la ID del doctor a HorariosVisita
+                        // Lógica para enviar la ID a HorariosVisita
+                      });
+                    },
                   ),
+
+                  // Separador
+                  const SizedBox(height: 20),
+
+                  // Utilizando DiaTrabajoSelector
+                  DiaTrabajoSelector(
+                    doctorSeleccionado: doctorId,
+                    onChanged: (newValue) {
+                      setState(() {
+                        diaTrabajoSeleccionado = newValue;
+                      });
+                    },
+                  ),
+
+                  // Separador
+                  const SizedBox(height: 20),
+
+                  // Utilizando HorariosVisita
+                  HorariosVisita(
+                    doctorSeleccionado: doctorId,
+                    onChanged: (newValue) {
+                      setState(() {
+                        horariosSeleccionados = newValue;
+                      });
+                    },
+                  ),
+
+                  // Separador
+                  const SizedBox(height: 20),
+
+                  // Selector de fecha
+                  SelectorFecha(
+                    onChanged: (DateTime selectedDate) {
+                      setState(() {
+                        _fechaSeleccionada = selectedDate;
+                      });
+                    },
+                  ),
+
+                  // Separador
+                  const SizedBox(height: 20),
+
                   MyTextField(
                     controller: notasController,
                     hintText: 'Motivo de la visita',
@@ -217,54 +213,7 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
     );
   }
 
-  void _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != diaController.text) {
-      setState(() {
-        diaController.text = DateFormat('yyyy-MM-dd')
-            .format(picked); // Formatear la fecha seleccionada
-      });
-    }
-  }
-
   Future<void> _guardarSolicitud() async {
-    try {
-      // Obtener los datos de la solicitud de visita
-      String ciudad = ciudadController.text;
-      String dia = diaController.text;
-      String doctor = doctorSeleccionado ?? ''; // Usamos el doctor seleccionado
-      String hora = horaController.text;
-      String hospital = hospitalController.text;
-      String notas = notasController.text;
-      String tipo = tipoController.text;
-
-      // Guardar los datos en Firebase
-      await FirebaseFirestore.instance.collection('solicitudesDeVisita').add({
-        'ciudad': ciudad,
-        'dia': dia,
-        'doctor': doctor,
-        'hora': hora,
-        'hospital': hospital,
-        'notas': notas,
-        'tipo': tipo,
-      });
-
-      // Notificar al usuario sobre el éxito de la solicitud
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Solicitud de visita guardada exitosamente')),
-      );
-    } catch (e) {
-      // Manejar cualquier error y notificar al usuario sobre el fallo de la solicitud
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Error al guardar la solicitud de visita')),
-      );
-    }
+    // Tu método _guardarSolicitud() aquí
   }
 }
