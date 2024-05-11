@@ -179,6 +179,32 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
     );
   }
 
+  Future<bool> _checkDoctorAvailableOnSelectedDay(String doctorId, String? selectedDay) async {
+    try {
+      // Obtener la referencia del doctor
+      DocumentSnapshot<Map<String, dynamic>> doctorSnapshot =
+          await FirebaseFirestore.instance.collection('Doctor').doc(doctorId).get();
+      
+      // Verificar si el documento existe
+      if (!doctorSnapshot.exists) {
+        return false; // El doctor no existe
+      }
+
+      // Obtener el campo dias_trabajo del documento
+      Map<String, dynamic> diasTrabajo = doctorSnapshot.data()?['dias_trabajo'] ?? {};
+
+      // Verificar si el día seleccionado existe y su valor es true
+      if (diasTrabajo.containsKey(selectedDay) && diasTrabajo[selectedDay] == true) {
+        return true; // El doctor está disponible en el día seleccionado
+      } else {
+        return false; // El doctor no está disponible en el día seleccionado
+      }
+    } catch (e) {
+      print('Error al verificar la disponibilidad del doctor: $e');
+      return false; // Manejar el error
+    }
+  }
+
   Future<void> _guardarSolicitud() async {
     try {
       String ciudad = ciudadController.text;
@@ -194,9 +220,25 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
       String? _cip = userData.data()?['cip'];
       String? _grupoSanguineo = userData.data()?['grupoSanguineo'];
 
+      // Almacenar el valor de doctorId en una variable local
+    String doctorIdValue = doctorId!;
+
+
       if (doctorId != null &&
           horariosSeleccionados != null &&
           _fechaSeleccionada != null) {
+
+        // Verificar disponibilidad del doctor en el día seleccionado
+        bool isDoctorAvailable = await _checkDoctorAvailableOnSelectedDay(doctorIdValue, diaTrabajoSeleccionado);
+   
+        
+        // Si el doctor no está disponible en el día seleccionado, mostrar un mensaje de error
+        if (!isDoctorAvailable) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('El doctor no está disponible en el día seleccionado')),
+          );
+          return;
+        }
 
         DocumentReference doctorRef =
             FirebaseFirestore.instance.collection('Doctor').doc(doctorId);

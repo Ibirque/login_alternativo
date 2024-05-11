@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SelectorFecha extends StatefulWidget {
   final void Function(DateTime selectedDate, int weekday) onChanged;
@@ -98,4 +100,32 @@ class _SelectorFechaState extends State<SelectorFecha> {
         return '';
     }
   }
+
+
+  Future<bool> _checkDoctorAvailableOnSelectedDay(String doctorId, String? selectedDay) async {
+  try {
+    // Obtener la referencia del doctor
+    DocumentSnapshot<Map<String, dynamic>> doctorSnapshot =
+        await FirebaseFirestore.instance.collection('Doctor').doc(doctorId).get();
+    
+    // Verificar si el documento existe
+    if (!doctorSnapshot.exists) {
+      return false; // El doctor no existe
+    }
+
+    // Obtener el campo dias_trabajo del documento
+    Map<String, dynamic> diasTrabajo = doctorSnapshot.data()?['dias_trabajo'] ?? {};
+
+    // Verificar si el día seleccionado existe y su valor es true
+    if (diasTrabajo.containsKey(selectedDay) && diasTrabajo[selectedDay] == true) {
+      return true; // El doctor está disponible en el día seleccionado
+    } else {
+      return false; // El doctor no está disponible en el día seleccionado
+    }
+  } catch (e) {
+    print('Error al verificar la disponibilidad del doctor: $e');
+    return false; // Manejar el error
+  }
+}
+
 }
