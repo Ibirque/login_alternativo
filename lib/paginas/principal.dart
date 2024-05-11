@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:login_alternativo/componentes/bottom_navigation_bar.dart';
 import 'package:login_alternativo/componentes/my_textbox.dart';
 import 'package:login_alternativo/componentes/my_textboxInfo.dart';
-import 'package:login_alternativo/paginas/perfil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:login_alternativo/paginas/charts.dart';
@@ -61,6 +60,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
+
       // Fondo
       body: Container(
         decoration: const BoxDecoration(
@@ -134,7 +134,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
       ),
 
 
-      //Barra de navegación
+      /*NavigationBar*/
       bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {

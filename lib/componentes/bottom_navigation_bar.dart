@@ -15,24 +15,29 @@ class MyBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      selectedIndex: currentIndex,
-      onDestinationSelected: onTap,
-      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.home),
+    return BottomNavigationBar(
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home, color: Colors.red), // Cambia el color del ícono aquí
           label: 'Inicio',
+          backgroundColor: Colors.black, // Cambia el color de fondo aquí
         ),
-        NavigationDestination(
-          icon: Icon(Icons.person),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person, color: Colors.green), // Cambia el color del ícono aquí
           label: 'Perfil',
+          backgroundColor: Colors.black, // Cambia el color de fondo aquí
         ),
-        NavigationDestination(
-          icon: Icon(Icons.add_circle),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add_circle, color: Colors.purple), // Cambia el color del ícono aquí
           label: 'Cita',
+          backgroundColor: Colors.black, // Cambia el color de fondo aquí
         ),
       ],
+      currentIndex: currentIndex,
+      selectedItemColor: Colors.amber[800],
+      unselectedItemColor: Colors.white,
+      onTap: onTap,
+      backgroundColor: Colors.black, // Establece el color de fondo de la barra de navegación como negro
     );
   }
 }
@@ -49,15 +54,13 @@ class NavigationHandler {
           context,
           PageRouteBuilder(
             transitionDuration: const Duration(milliseconds: 500),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return FadeTransition(
                 opacity: animation,
                 child: child,
               );
             },
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                PaginaPrincipal(),
+            pageBuilder: (context, animation, secondaryAnimation) => PaginaPrincipal(),
           ),
         );
         break;
@@ -66,8 +69,7 @@ class NavigationHandler {
           context,
           PageRouteBuilder(
             transitionDuration: const Duration(milliseconds: 500),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return FadeTransition(
                 opacity: animation,
                 child: child,
@@ -82,8 +84,7 @@ class NavigationHandler {
           context,
           PageRouteBuilder(
             transitionDuration: const Duration(milliseconds: 500),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return FadeTransition(
                 opacity: animation,
                 child: child,
@@ -93,12 +94,6 @@ class NavigationHandler {
           ),
         );
         break;
-      // case 3:
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => Emergencia()),
-      //   );
-      //   break;
     }
   }
 }

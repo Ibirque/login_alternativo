@@ -203,6 +203,7 @@ class PaginaLogin extends StatelessWidget {
                 onPressed: () {
                   signUserIn(context);
                 },
+                buttonText: 'Iniciar sesión',
               ),
 
               const SizedBox(height: 30),

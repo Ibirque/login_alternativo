@@ -1,9 +1,10 @@
+// ignore_for_file: use_super_parameters, avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:login_alternativo/componentes/my_textbox.dart';
 import 'package:login_alternativo/componentes/bottom_navigation_bar.dart';
-import 'package:login_alternativo/paginas/principal.dart';
 
 class Perfil extends StatefulWidget {
   const Perfil({Key? key}) : super(key: key);
@@ -112,7 +113,7 @@ class _PerfilState extends State<Perfil> {
         ),
       ),
 
-      /*Ir a home*/
+      /*NavigationBar*/
       bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
