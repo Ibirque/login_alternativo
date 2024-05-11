@@ -3,9 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HorariosVisita extends StatefulWidget {
   final String? doctorSeleccionado;
+  final DateTime? fechaSeleccionada; // Nuevo parámetro
   final ValueChanged<List<String>>? onChanged;
 
-  const HorariosVisita({Key? key, this.doctorSeleccionado, this.onChanged}) : super(key: key);
+  const HorariosVisita({
+    Key? key,
+    this.doctorSeleccionado,
+    this.fechaSeleccionada,
+    this.onChanged,
+  }) : super(key: key);
 
   @override
   _HorariosVisitaState createState() => _HorariosVisitaState();
@@ -16,10 +22,28 @@ class _HorariosVisitaState extends State<HorariosVisita> {
 
   @override
   Widget build(BuildContext context) {
+    // Verificar si tanto el doctor como la fecha están presentes
+    if (widget.doctorSeleccionado == null || widget.fechaSeleccionada == null) {
+      return const Center(
+        child: Text(
+          'Selecciona un doctor y una fecha para ver los horarios disponibles',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('Doctor').doc(widget.doctorSeleccionado).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('Doctor')
+            .doc(widget.doctorSeleccionado)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Text('Error al cargar los datos');
@@ -29,13 +53,16 @@ class _HorariosVisitaState extends State<HorariosVisita> {
             return const CircularProgressIndicator();
           }
 
-          Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
+          Map<String, dynamic>? data =
+              snapshot.data!.data() as Map<String, dynamic>?;
 
           if (data == null || !data.containsKey('horarios_disponibles')) {
-            return const Text('Para poder ver día y horas disponibles');
+            return const Text(
+                'Selecciona Dr/a. horario y fecha para poder ver las horas disponibles');
           }
 
-          List<String> horariosDisponibles = List<String>.from(data['horarios_disponibles']);
+          List<String> horariosDisponibles =
+              List<String>.from(data['horarios_disponibles']);
 
           return DropdownButtonFormField<String>(
             decoration: InputDecoration(
@@ -50,10 +77,16 @@ class _HorariosVisitaState extends State<HorariosVisita> {
               hintText: 'Horarios Disponibles',
               hintStyle: TextStyle(color: Colors.grey[500]),
             ),
-            value: _horariosSeleccionados?.isEmpty ?? true ? null : _horariosSeleccionados!.first,
+            value: _horariosSeleccionados?.isEmpty ?? true
+                ? null
+                : _horariosSeleccionados!.first,
             onChanged: (newValue) async {
               // Verificar disponibilidad antes de actualizar el estado
-              final disponibilidad = await verificarDisponibilidad(widget.doctorSeleccionado!, newValue!);
+              final disponibilidad = await verificarDisponibilidad(
+                widget.doctorSeleccionado!,
+                newValue!,
+                widget.fechaSeleccionada!,
+              );
               if (disponibilidad) {
                 setState(() {
                   _horariosSeleccionados = [newValue];
@@ -65,7 +98,8 @@ class _HorariosVisitaState extends State<HorariosVisita> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text('Horario no disponible'),
-                      content: Text('El horario seleccionado ya está reservado.'),
+                      content:
+                          Text('El horario seleccionado ya está reservado.'),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () {
@@ -84,11 +118,17 @@ class _HorariosVisitaState extends State<HorariosVisita> {
               return DropdownMenuItem<String>(
                 value: horario,
                 child: FutureBuilder<bool>(
-                  future: verificarDisponibilidad(widget.doctorSeleccionado!, horario),
-                  builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  future: verificarDisponibilidad(
+                    widget.doctorSeleccionado!,
+                    horario,
+                    widget.fechaSeleccionada!,
+                  ),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     if (snapshot.hasData) {
                       // Determinar el color del texto según la disponibilidad
-                      Color textColor = snapshot.data! ? Colors.black : Colors.red;
+                      Color textColor =
+                          snapshot.data! ? Colors.black : Colors.red;
 
                       return Text(
                         horario,
@@ -111,16 +151,26 @@ class _HorariosVisitaState extends State<HorariosVisita> {
     );
   }
 
-  Future<bool> verificarDisponibilidad(String doctorId, String horarioSeleccionado) async {
+  Future<bool> verificarDisponibilidad(
+    String doctorId,
+    String horarioSeleccionado,
+    DateTime fechaSeleccionada,
+  ) async {
     try {
-      final reservasSnapshot = await FirebaseFirestore.instance.collection('Doctor').doc(doctorId).collection('Reservas').get();
+      final reservasSnapshot = await FirebaseFirestore.instance
+          .collection('Doctor')
+          .doc(doctorId)
+          .collection('Reservas')
+          .get();
       for (final reserva in reservasSnapshot.docs) {
         final horariosReserva = reserva.data()['horarios'];
-        if (horariosReserva.contains(horarioSeleccionado)) {
-          return false; // El horario ya está reservado
+        final fechaReserva = reserva.data()['fecha'];
+        if (horariosReserva.contains(horarioSeleccionado) &&
+            fechaReserva.toDate().isAtSameMomentAs(fechaSeleccionada)) {
+          return false; // El horario ya está reservado para la fecha seleccionada
         }
       }
-      return true; // El horario está disponible
+      return true; // El horario está disponible para la fecha seleccionada
     } catch (e) {
       print('Error al verificar disponibilidad: $e');
       return false; // Error al verificar disponibilidad

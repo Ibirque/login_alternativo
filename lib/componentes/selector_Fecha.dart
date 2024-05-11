@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SelectorFecha extends StatefulWidget {
-  final void Function(DateTime selectedDate) onChanged;
+  final void Function(DateTime selectedDate, int weekday) onChanged;
 
   const SelectorFecha({Key? key, required this.onChanged}) : super(key: key);
 
@@ -22,14 +22,14 @@ class _SelectorFechaState extends State<SelectorFecha> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime(2000),
+      firstDate: DateTime(2023),
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
       });
-      widget.onChanged(_selectedDate);
+      widget.onChanged(_selectedDate, _selectedDate.weekday);
     }
   }
 
@@ -52,17 +52,50 @@ class _SelectorFechaState extends State<SelectorFecha> {
               color: Colors.grey[400],
             ),
             SizedBox(width: 10),
-            Text(
-              '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.w200,
-              ),
+            Column(
+              children: [
+                Text(
+                  '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w200,
+                  ),
+                ),
+                Text(
+                  _getWeekdayString(_selectedDate.weekday),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w200,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  String _getWeekdayString(int weekday) {
+    switch (weekday) {
+      case 1:
+        return 'Lunes';
+      case 2:
+        return 'Martes';
+      case 3:
+        return 'Miércoles';
+      case 4:
+        return 'Jueves';
+      case 5:
+        return 'Viernes';
+      case 6:
+        return 'Sábado';
+      case 7:
+        return 'Domingo';
+      default:
+        return '';
+    }
   }
 }

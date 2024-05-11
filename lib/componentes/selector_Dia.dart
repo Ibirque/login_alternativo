@@ -31,41 +31,24 @@ class _DiaTrabajoSelectorState extends State<DiaTrabajoSelector> {
 
           Map<String, dynamic>? data = snapshot.data!.data() as Map<String, dynamic>?;
 
-          if (data == null || !data.containsKey('dias_trabajo')) {
-            return const Text('Selecciona un doctor primero');
+          if (data == null || !data.containsKey('horario_trabajo')) {
+            return const Text(
+            'Horario de trabajo: -Selecciona Dr/a.-', // Mostrar el horario de trabajo
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          );
           }
 
-          Map<String, dynamic> diasTrabajo = Map<String, dynamic>.from(data['dias_trabajo']);
+          String horarioTrabajo = data['horario_trabajo'];
 
-          // Filtrar los días que tengan valor true
-          List<String> diasHabilitados = diasTrabajo.entries.where((entry) => entry.value == true).map((entry) => entry.key).toList();
-
-          return DropdownButtonFormField<String>(
-            decoration: InputDecoration(
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.shade400),
-              ),
-              fillColor: Colors.grey.shade200,
-              filled: true,
-              hintText: 'Día de Trabajo',
-              hintStyle: TextStyle(color: Colors.grey[500]),
+          return Text(
+            'Horario de trabajo: $horarioTrabajo', // Mostrar el horario de trabajo
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
-            value: _diaSeleccionado,
-            onChanged: (newValue) {
-              setState(() {
-                _diaSeleccionado = newValue;
-                widget.onChanged?.call(_diaSeleccionado!);
-              });
-            },
-            items: diasHabilitados.map((dia) {
-              return DropdownMenuItem<String>(
-                value: dia,
-                child: Text(dia),
-              );
-            }).toList(),
           );
         },
       ),

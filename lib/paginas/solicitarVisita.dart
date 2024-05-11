@@ -5,12 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:login_alternativo/componentes/bottom_navigation_bar.dart';
 import 'package:login_alternativo/componentes/my_textfield.dart';
 import 'package:login_alternativo/componentes/my_button.dart';
-
-//Selectores
 import 'package:login_alternativo/componentes/selector_Doctor.dart';
 import 'package:login_alternativo/componentes/selector_Dia.dart';
-import 'package:login_alternativo/componentes/selector_Horario.dart'; 
-import 'package:login_alternativo/componentes/selector_Fecha.dart'; 
+import 'package:login_alternativo/componentes/selector_Horario.dart';
+import 'package:login_alternativo/componentes/selector_Fecha.dart';
 
 class SolicitarVisita extends StatefulWidget {
   const SolicitarVisita({Key? key}) : super(key: key);
@@ -28,27 +26,17 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
   int _currentIndex = 2;
 
   //Dropdowns
-  // Dropdown de ciudades
   List<String> ciudadesDisponibles = ['Barcelona', 'Madrid', 'Zaragoza'];
   String? ciudadSeleccionada;
   String? doctorId;
-  // Dropdown de tipos de visita
   List<String> tiposVisita = ['Primera visita', 'Urgencias'];
   String? tipoVisitaSeleccionada;
 
-
   //Selectores
-  // Doctor seleccionado
   String? doctorSeleccionado;
-  // Horarios seleccionados
   List<String>? horariosSeleccionados;
-  // Días de trabajo seleccionados
   String? diaTrabajoSeleccionado;
-  // Fecha seleccionada
   DateTime? _fechaSeleccionada;
-
-  TextEditingController diaController =
-      TextEditingController(); // Nuevo controlador para la fecha
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +66,6 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
                 children: [
                   const SizedBox(height: 30),
                   Container(
-                    // Selector de ciudad
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
@@ -103,7 +90,6 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
                   ),
                   const SizedBox(height: 20),
                   Container(
-                    // Selector de tipo de visita
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
@@ -126,26 +112,16 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
                       }).toList(),
                     ),
                   ),
-
-                  // Separador
                   const SizedBox(height: 20),
-
-                  // Utilizando el DoctorSelector
                   DoctorSelector(
                     onChanged: (doctorData) {
                       setState(() {
                         doctorSeleccionado = doctorData['nombre'];
                         doctorId = doctorData['id'];
-                        // Mandar la ID del doctor a HorariosVisita
-                        // Lógica para enviar la ID a HorariosVisita
                       });
                     },
                   ),
-
-                  // Separador
                   const SizedBox(height: 20),
-
-                  // Utilizando DiaTrabajoSelector
                   DiaTrabajoSelector(
                     doctorSeleccionado: doctorId,
                     onChanged: (newValue) {
@@ -154,35 +130,26 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
                       });
                     },
                   ),
-
-                  // Separador
                   const SizedBox(height: 20),
-
-                  // Utilizando HorariosVisita
+                  SelectorFecha(
+                    onChanged: (DateTime selectedDate, int weekday) {
+                      setState(() {
+                        _fechaSeleccionada = selectedDate;
+                        diaTrabajoSeleccionado = _getWeekdayString(weekday);
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
                   HorariosVisita(
                     doctorSeleccionado: doctorId,
+                    fechaSeleccionada: _fechaSeleccionada,
                     onChanged: (newValue) {
                       setState(() {
                         horariosSeleccionados = newValue;
                       });
                     },
                   ),
-
-                  // Separador
                   const SizedBox(height: 20),
-
-                  // Selector de fecha
-                  SelectorFecha(
-                    onChanged: (DateTime selectedDate) {
-                      setState(() {
-                        _fechaSeleccionada = selectedDate;
-                      });
-                    },
-                  ),
-
-                  // Separador
-                  const SizedBox(height: 20),
-
                   MyTextField(
                     controller: notasController,
                     hintText: 'Motivo de la visita',
@@ -205,7 +172,6 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
           setState(() {
             _currentIndex = index;
           });
-          // Dependiendo del índice seleccionado, navegamos a la página correspondiente
           NavigationHandler navigationHandler = NavigationHandler(context);
           navigationHandler.handleNavigation(index);
         },
@@ -215,34 +181,31 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
 
   Future<void> _guardarSolicitud() async {
     try {
-      // Obtener los datos de la solicitud de visita
       String ciudad = ciudadController.text;
       String notas = notasController.text;
 
-      // Obtener la información del usuario
       final User? user = currentUser;
       final String? userId = user?.uid;
       final DocumentSnapshot<Map<String, dynamic>> userData =
           await _firestore.collection('usuarios').doc(user?.email).get();
 
-      // Obtener datos del usuario
       String? _username = userData.data()?['username'];
       String? _apellido = userData.data()?['apellido'];
       String? _cip = userData.data()?['cip'];
       String? _grupoSanguineo = userData.data()?['grupoSanguineo'];
 
-      // Guardar la reserva en la subcolección "Reservas" del doctor
       if (doctorId != null &&
           horariosSeleccionados != null &&
-          diaTrabajoSeleccionado != null) {
+          _fechaSeleccionada != null) {
+
         DocumentReference doctorRef =
             FirebaseFirestore.instance.collection('Doctor').doc(doctorId);
         CollectionReference reservasRef = doctorRef.collection('Reservas');
         await reservasRef.add({
-          'fecha': DateTime.now(),
+          'fecha': _fechaSeleccionada,
           'horarios': horariosSeleccionados,
           'notas': notas,
-          'ciudad': ciudad,
+          'ciudad': ciudadSeleccionada,
           'tipo': tipoVisitaSeleccionada,
           'userId': userId,
           'usermail': currentUser.email,
@@ -253,19 +216,46 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
           'doctorId': doctorId,
           'diaTrabajo': diaTrabajoSeleccionado,
         });
-      }
+        setState(() {
+            _currentIndex = 0;
+          });
+          NavigationHandler navigationHandler = NavigationHandler(context);
+          navigationHandler.handleNavigation(0);
+        
+      }     
 
-      // Notificar al usuario sobre el éxito de la solicitud
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Solicitud de visita guardada exitosamente')),
+            
       );
     } catch (e) {
-      // Manejar cualquier error y notificar al usuario sobre el fallo de la solicitud
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Error al guardar la solicitud de visita')),
       );
+    }
+
+  }
+
+  String _getWeekdayString(int weekday) {
+    switch (weekday) {
+      case 1:
+        return 'Lunes';
+      case 2:
+        return 'Martes';
+      case 3:
+        return 'Miércoles';
+      case 4:
+        return 'Jueves';
+      case 5:
+        return 'Viernes';
+      case 6:
+        return 'Sábado';
+      case 7:
+        return 'Domingo';
+      default:
+        return '';
     }
   }
 }
