@@ -151,29 +151,31 @@ class _HorariosVisitaState extends State<HorariosVisita> {
     );
   }
 
-  Future<bool> verificarDisponibilidad(
+Future<bool> verificarDisponibilidad(
     String doctorId,
     String horarioSeleccionado,
     DateTime fechaSeleccionada,
-  ) async {
+) async {
     try {
-      final reservasSnapshot = await FirebaseFirestore.instance
-          .collection('Doctor')
-          .doc(doctorId)
-          .collection('Reservas')
-          .get();
-      for (final reserva in reservasSnapshot.docs) {
-        final horariosReserva = reserva.data()['horarios'];
-        final fechaReserva = reserva.data()['fecha'];
-        if (horariosReserva.contains(horarioSeleccionado) &&
-            fechaReserva.toDate().isAtSameMomentAs(fechaSeleccionada)) {
-          return false; // El horario ya está reservado para la fecha seleccionada
+        final reservasSnapshot = await FirebaseFirestore.instance
+            .collection('Doctor')
+            .doc(doctorId)
+            .collection('Reservas')
+            .where('fecha', isEqualTo: fechaSeleccionada)
+            .get();
+        
+        for (final reserva in reservasSnapshot.docs) {
+            final horariosReserva = reserva.data()['horarios'];
+            if (horariosReserva.contains(horarioSeleccionado)) {
+                return false; // El horario ya está reservado para la fecha seleccionada
+            }
         }
-      }
-      return true; // El horario está disponible para la fecha seleccionada
+        return true; // El horario está disponible para la fecha seleccionada
     } catch (e) {
-      print('Error al verificar disponibilidad: $e');
-      return false; // Error al verificar disponibilidad
+        print('Error al verificar disponibilidad: $e');
+        return false; // Error al verificar disponibilidad
     }
-  }
+}
+
+
 }

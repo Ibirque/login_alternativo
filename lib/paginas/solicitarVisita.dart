@@ -21,7 +21,6 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
   final currentUser = FirebaseAuth.instance.currentUser!;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController ciudadController = TextEditingController();
-  TextEditingController hospitalController = TextEditingController();
   TextEditingController notasController = TextEditingController();
   int _currentIndex = 2;
 
@@ -34,9 +33,9 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
 
   //Selectores
   String? doctorSeleccionado;
-  List<String>? horariosSeleccionados;
   String? diaTrabajoSeleccionado;
   DateTime? _fechaSeleccionada;
+  List<String>? horarioSeleccionado;
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +144,7 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
                     fechaSeleccionada: _fechaSeleccionada,
                     onChanged: (newValue) {
                       setState(() {
-                        horariosSeleccionados = newValue;
+                        horarioSeleccionado = newValue;
                       });
                     },
                   ),
@@ -179,29 +178,39 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
     );
   }
 
-  Future<bool> _checkDoctorAvailableOnSelectedDay(String doctorId, String? selectedDay) async {
+  Future<bool> _checkDoctorAvailableOnSelectedDateTime(String doctorId,
+      DateTime fechaSeleccionada, List<String> horariosSeleccionados) async {
     try {
-      // Obtener la referencia del doctor
       DocumentSnapshot<Map<String, dynamic>> doctorSnapshot =
-          await FirebaseFirestore.instance.collection('Doctor').doc(doctorId).get();
-      
-      // Verificar si el documento existe
+          await FirebaseFirestore.instance
+              .collection('Doctor')
+              .doc(doctorId)
+              .get();
+
       if (!doctorSnapshot.exists) {
-        return false; // El doctor no existe
+        return false;
       }
 
-      // Obtener el campo dias_trabajo del documento
-      Map<String, dynamic> diasTrabajo = doctorSnapshot.data()?['dias_trabajo'] ?? {};
+      QuerySnapshot<Map<String, dynamic>> reservationsSnapshot =
+          await FirebaseFirestore.instance
+              .collection('Doctor')
+              .doc(doctorId)
+              .collection('Reservas')
+              .where('fecha', isEqualTo: fechaSeleccionada)
+              .get();
 
-      // Verificar si el día seleccionado existe y su valor es true
-      if (diasTrabajo.containsKey(selectedDay) && diasTrabajo[selectedDay] == true) {
-        return true; // El doctor está disponible en el día seleccionado
-      } else {
-        return false; // El doctor no está disponible en el día seleccionado
+      for (final reservation in reservationsSnapshot.docs) {
+        final List<String> reservedTimes =
+            List<String>.from(reservation.data()['horarios']);
+        if (reservedTimes.contains(horariosSeleccionados)) {
+          return false;
+        }
       }
+
+      return true;
     } catch (e) {
       print('Error al verificar la disponibilidad del doctor: $e');
-      return false; // Manejar el error
+      return false;
     }
   }
 
@@ -221,63 +230,87 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
       String? _grupoSanguineo = userData.data()?['grupoSanguineo'];
 
       // Almacenar el valor de doctorId en una variable local
-    String doctorIdValue = doctorId!;
+      String doctorIdValue = doctorId!;
 
+      if (doctorId != null && horarioSeleccionado != null) {
+        // Verificar disponibilidad del doctor en el día y horario seleccionados
+        bool disponibilidad = await _checkDoctorAvailableOnSelectedDateTime(
+          doctorIdValue,
+          _fechaSeleccionada!,
+          horarioSeleccionado!,
+        );
 
-      if (doctorId != null &&
-          horariosSeleccionados != null &&
-          _fechaSeleccionada != null) {
-
-        // Verificar disponibilidad del doctor en el día seleccionado
-        bool isDoctorAvailable = await _checkDoctorAvailableOnSelectedDay(doctorIdValue, diaTrabajoSeleccionado);
-   
-        
-        // Si el doctor no está disponible en el día seleccionado, mostrar un mensaje de error
-        if (!isDoctorAvailable) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('El doctor no está disponible en el día seleccionado')),
-          );
-          return;
-        }
-
-        DocumentReference doctorRef =
-            FirebaseFirestore.instance.collection('Doctor').doc(doctorId);
-        CollectionReference reservasRef = doctorRef.collection('Reservas');
-        await reservasRef.add({
-          'fecha': _fechaSeleccionada,
-          'horarios': horariosSeleccionados,
-          'notas': notas,
-          'ciudad': ciudadSeleccionada,
-          'tipo': tipoVisitaSeleccionada,
-          'userId': userId,
-          'usermail': currentUser.email,
-          'username': _username,
-          'apellido': _apellido,
-          'cip': _cip,
-          'grupoSanguineo': _grupoSanguineo,
-          'doctorId': doctorId,
-          'diaTrabajo': diaTrabajoSeleccionado,
-        });
-        setState(() {
+        if (disponibilidad) {
+          // Obtener los días de trabajo del doctor desde Firestore
+          DocumentSnapshot<Map<String, dynamic>> doctorSnapshot =
+              await FirebaseFirestore.instance
+                  .collection('Doctor')
+                  .doc(doctorId)
+                  .get();
+          
+          // Verificar si se encontró el documento del doctor
+          if (doctorSnapshot.exists) {
+            // Obtener los días de trabajo del doctor como una lista de días
+            List<String> diasTrabajoDoctor = List<String>.from(doctorSnapshot.data()!['dias_trabajo_array']);
+            
+            // Convertir la lista de días de trabajo en un conjunto para facilitar la búsqueda
+            Set<String> diasTrabajoSet = Set.from(diasTrabajoDoctor);
+            
+            // Verificar si el día seleccionado está en los días de trabajo del doctor
+            if (!diasTrabajoSet.contains(_getWeekdayString(_fechaSeleccionada!.weekday))) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('El doctor no trabaja este día. Por favor, selecciona otro día.'),
+                ),
+              );
+              return; // Salir del método porque no se puede hacer la reserva en este día
+            }
+          }
+          
+          DocumentReference doctorRef =
+              FirebaseFirestore.instance.collection('Doctor').doc(doctorId);
+          CollectionReference reservasRef = doctorRef.collection('Reservas');
+          await reservasRef.add({
+            'fecha': _fechaSeleccionada,
+            'horarios': horarioSeleccionado,
+            'notas': notas,
+            'ciudad': ciudadSeleccionada,
+            'tipo': tipoVisitaSeleccionada,
+            'userId': userId,
+            'usermail': currentUser.email,
+            'username': _username,
+            'apellido': _apellido,
+            'cip': _cip,
+            'grupoSanguineo': _grupoSanguineo,
+            'doctorId': doctorId,
+            'diaTrabajo': diaTrabajoSeleccionado,
+          });
+          setState(() {
             _currentIndex = 0;
           });
           NavigationHandler navigationHandler = NavigationHandler(context);
           navigationHandler.handleNavigation(0);
-        
-      }     
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Solicitud de visita guardada exitosamente')),
-            
-      );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('El horario seleccionado ya está reservado.'),
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Selecciona un doctor y una hora para la visita.'),
+          ),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Error al guardar la solicitud de visita')),
+          content: Text('Error al guardar la solicitud de visita.'),
+        ),
       );
     }
-
   }
 
   String _getWeekdayString(int weekday) {
