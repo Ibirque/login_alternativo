@@ -27,7 +27,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
   @override
   void initState() {
     super.initState();
-    initializeDateFormatting('es'); 
+    initializeDateFormatting('es');
     getUsername();
     getCitas();
   }
@@ -48,55 +48,55 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
   }
 
   // Función para cargar las citas del usuario
-Future<void> getCitas() async {
-  try {
-    if (user != null) {
+  Future<void> getCitas() async {
+    try {
+      if (user != null) {
+        QuerySnapshot<Map<String, dynamic>> citasSnapshot =
+            await FirebaseFirestore.instance
+                .collection('usuarios')
+                .doc(user!.email)
+                .collection('citas')
+                .get() as QuerySnapshot<Map<String, dynamic>>;
 
-      QuerySnapshot<Map<String, dynamic>> citasSnapshot =
-          await FirebaseFirestore.instance
-              .collection('usuarios')
-              .doc(user!.email)
-              .collection('citas')
-              .get() as QuerySnapshot<Map<String, dynamic>>;
+        setState(() {
+          // Limpiamos la lista de widgets antes de agregar los nuevos
+          citasWidgets.clear();
+          // Creamos un widget MyTextBox2 para cada cita encontrada
+          citasSnapshot.docs.forEach((cita) {
+            // Convertir el Timestamp a DateTime
+            DateTime fechaCita = (cita['fecha'] as Timestamp).toDate();
 
+            // Formatear la fecha como una cadena legible
+            String fechaFormateada = DateFormat.yMMMMd('es').format(fechaCita);
 
-      setState(() {
-        // Limpiamos la lista de widgets antes de agregar los nuevos
-        citasWidgets.clear();
-        // Creamos un widget MyTextBox2 para cada cita encontrada        
-        citasSnapshot.docs.forEach((cita) {          
+            // Obtener el primer valor del array "horarios"
+            String primerHorario = '';
+            List<dynamic> horarios = cita['horarios'];
+            if (horarios != null && horarios.isNotEmpty) {
+              primerHorario = horarios[0].toString();
+            }
 
-          // Convertir el Timestamp a DateTime
-          DateTime fechaCita = (cita['fecha'] as Timestamp).toDate();
-
-          // Formatear la fecha como una cadena legible
-          String fechaFormateada = DateFormat.yMMMMd('es').format(fechaCita);
-
-          // Obtener el primer valor del array "horarios"
-          String primerHorario = '';
-          List<dynamic> horarios = cita['horarios'];
-          if (horarios != null && horarios.isNotEmpty) {
-            primerHorario = horarios[0].toString();
-          }
-
-          citasWidgets.add(
-            MyTextBox2(
-              texto: cita['nombre_doctor'],
-              sectionName: cita['tipo'],
-              sectionName2: fechaFormateada,
-              hora: primerHorario,
-              onPressed: () => editfield('username'),
-            ),
-          );
+            citasWidgets.add(
+              MyTextBox2(
+                texto: cita['nombre_doctor'],
+                sectionName: cita['tipo'],
+                sectionName2: fechaFormateada,
+                hora: primerHorario,
+                notas: cita['notas'], // Pass notas field
+                documentId: cita.id, // Pass documentId
+                onPressed: () => editfield('username'),
+                
+              ),
+            );
+          });
         });
-      });
-    } else {
-      print('Usuario no autenticado.');
+      } else {
+        print('Usuario no autenticado.');
+      }
+    } catch (e) {
+      print('Error retrieving citas: $e');
     }
-  } catch (e) {
-    print('Error retrieving citas: $e');
   }
-}
 
   void navigateToStatsPage() {
     Navigator.push(
