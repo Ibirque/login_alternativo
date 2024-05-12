@@ -43,6 +43,7 @@ dependencies:
   cloud_firestore: ^4.15.6
   google_maps_flutter: ^2.6.1
   google_places_flutter: ^2.0.8
+  geolocator: ^11.0.0
 
 dev_dependencies:
   flutter_test:
