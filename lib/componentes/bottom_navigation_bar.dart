@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_alternativo/paginas/perfil.dart';
 import 'package:login_alternativo/paginas/principal.dart';
 import 'package:login_alternativo/paginas/solicitarVisita.dart';
+import 'package:login_alternativo/paginas/mapa.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -16,29 +17,35 @@ class MyBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home, color: Colors.red), // Cambia el color del ícono aquí
-          label: 'Inicio',
-          backgroundColor: Colors.black, // Cambia el color de fondo aquí
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person, color: Colors.green), // Cambia el color del ícono aquí
-          label: 'Perfil',
-          backgroundColor: Colors.black, // Cambia el color de fondo aquí
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add_circle, color: Colors.purple), // Cambia el color del ícono aquí
-          label: 'Cita',
-          backgroundColor: Colors.black, // Cambia el color de fondo aquí
-        ),
-      ],
-      currentIndex: currentIndex,
-      selectedItemColor: Colors.amber[800],
-      unselectedItemColor: Colors.white,
-      onTap: onTap,
-      backgroundColor: Colors.black, // Establece el color de fondo de la barra de navegación como negro
-    );
+  items: <BottomNavigationBarItem>[
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home, size: 24, color: Colors.red), // Tamaño del ícono ajustado
+      label: 'Inicio',
+      backgroundColor: Colors.black,
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.person, size: 24, color: Colors.green), // Tamaño del ícono ajustado
+      label: 'Perfil',
+      backgroundColor: Colors.black,
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.add_circle, size: 24, color: Colors.purple), // Tamaño del ícono ajustado
+      label: 'Cita',
+      backgroundColor: Colors.black,
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.map, size: 24, color: Colors.red), // Tamaño del ícono ajustado
+      label: 'Mapa',
+      backgroundColor: Colors.black,
+    ),
+  ],
+  currentIndex: currentIndex,
+  selectedItemColor: Colors.amber[800],
+  unselectedItemColor: Colors.white,
+  onTap: onTap,
+  backgroundColor: Colors.black,
+);
+
   }
 }
 
@@ -94,6 +101,23 @@ class NavigationHandler {
           ),
         );
         break;
+        case 3:
+  Navigator.pushReplacement(
+    context,
+    PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 500),
+      transitionsBuilder:
+          (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          MapsPage(), // Utiliza la clase MapsPage
+    ),
+  );
+  break;
     }
   }
 }
