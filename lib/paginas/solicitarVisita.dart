@@ -229,6 +229,15 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
       String? _cip = userData.data()?['cip'];
       String? _grupoSanguineo = userData.data()?['grupoSanguineo'];
 
+      // Obtener el nombre del doctor
+      DocumentSnapshot<Map<String, dynamic>> doctorSnapshot =
+          await FirebaseFirestore.instance
+              .collection('Doctor')
+              .doc(doctorId)
+              .get();
+
+      String? nombreDoctor = doctorSnapshot.data()?['nombre'];
+
       // Almacenar el valor de doctorId en una variable local
       String doctorIdValue = doctorId!;
 
@@ -285,11 +294,32 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
             'doctorId': doctorId,
             'diaTrabajo': diaTrabajoSeleccionado,
           });
+
+          // Guardar la cita en la colección del usuario
+          DocumentReference usuarioRef = _firestore.collection('usuarios').doc(currentUser.email);
+          CollectionReference citasRef = usuarioRef.collection('citas');
+          await citasRef.add({
+            'nombre_doctor': nombreDoctor,
+            'doctorId': doctorId,
+            'fecha': _fechaSeleccionada,
+            'grupoSanguineo': 'Esperando resultados',
+            'horarios': horarioSeleccionado,
+            'notas': notas,
+            'tipo': tipoVisitaSeleccionada,
+            'userId': userId,
+            'usermail': currentUser.email,
+          });
+
           setState(() {
             _currentIndex = 0;
           });
           NavigationHandler navigationHandler = NavigationHandler(context);
           navigationHandler.handleNavigation(0);
+          ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Visita guardada correctamente'),
+          ),
+        );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -297,6 +327,7 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
             ),
           );
         }
+        
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
