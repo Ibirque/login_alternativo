@@ -165,6 +165,7 @@ class _SolicitarVisitaState extends State<SolicitarVisita> {
           ),
         ),
       ),
+      /*NavigationBar*/
       bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {

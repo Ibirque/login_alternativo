@@ -22,7 +22,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
   final User? user = FirebaseAuth.instance.currentUser;
   String? _username;
   int _currentIndex = 0;
-  List<Widget> citasWidgets = []; // Lista para almacenar los widgets de citas
+  List<Widget> citasWidgets = []; 
 
   @override
   void initState() {
@@ -32,13 +32,13 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
     getCitas();
   }
 
-  // Función para cargar el nombre de usuario
+  // Función para cargar el nombre de usuario, usamos el id
   Future<void> getUsername() async {
     if (user != null) {
       DocumentSnapshot<Map<String, dynamic>> userData =
           await FirebaseFirestore.instance
               .collection('usuarios')
-              .doc(user!.uid) // Utilizamos el UID del usuario actual
+              .doc(user!.uid) 
               .get();
 
       setState(() {
@@ -63,13 +63,11 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
           citasWidgets.clear();
           // Creamos un widget MyTextBox2 para cada cita encontrada
           citasSnapshot.docs.forEach((cita) {
-            // Convertir el Timestamp a DateTime
+            //Convertir fecha y hacer que sea una cadena legible
             DateTime fechaCita = (cita['fecha'] as Timestamp).toDate();
-
-            // Formatear la fecha como una cadena legible
             String fechaFormateada = DateFormat.yMMMMd('es').format(fechaCita);
 
-            // Obtener el primer valor del array "horarios"
+            //Buscamos el primer horario
             String primerHorario = '';
             List<dynamic> horarios = cita['horarios'];
             if (horarios != null && horarios.isNotEmpty) {
@@ -82,8 +80,8 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                 sectionName: cita['tipo'],
                 sectionName2: fechaFormateada,
                 hora: primerHorario,
-                notas: cita['notas'], // Pass notas field
-                documentId: cita.id, // Pass documentId
+                notas: cita['notas'],
+                documentId: cita.id,
                 onPressed: () => editfield('username'),
                 
               ),
@@ -98,6 +96,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
     }
   }
 
+  //Nuestra pagina de estadisticas y charts
   void navigateToStatsPage() {
     Navigator.push(
       context,
@@ -140,7 +139,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                 ),
               ),
             ),
-            ...citasWidgets, // Agregamos dinámicamente los widgets de citas
+            ...citasWidgets, // Como me gusta esto de reservar espacio xd
             const SizedBox(height: 20),
             const Padding(
               padding: EdgeInsets.only(left: 25.0),
@@ -167,6 +166,8 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
           ],
         ),
       ),
+
+      /*NavigationBar*/
       bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
