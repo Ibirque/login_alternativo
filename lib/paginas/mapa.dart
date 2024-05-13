@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:login_alternativo/componentes/bottom_navigation_bar.dart';
+
+//Guia de implementacion de
+// https://fredrick-m.medium.com/google-places-api-with-flutter-ebac822a7546
 
 class MapsPage extends StatefulWidget {
   const MapsPage({Key? key}) : super(key: key);
@@ -15,6 +19,9 @@ class _MapsPageState extends State<MapsPage> {
   int _currentIndex = 3;
   LatLng _center = LatLng(41.389262, 2.168451);
   List<Widget> citasWidgets = [];
+  List<PlacesSearchResult> _placesList = [];
+  final _places =
+      GoogleMapsPlaces(apiKey: 'AIzaSyBf7dMajiznsKDFN2nQOmb4Hq5MCYskYfA');
 
   @override
   void initState() {
@@ -27,11 +34,10 @@ class _MapsPageState extends State<MapsPage> {
     try {
       Position position = await Geolocator.getCurrentPosition();
       _updateMapPosition(position);
+
       citasWidgets.clear();
-      // Agregar el mapa a la lista de widgets
       citasWidgets.add(
         Container(
-          // Ajusta el tamaño del contenedor según el tamaño de la pantalla
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: GoogleMap(
@@ -49,8 +55,29 @@ class _MapsPageState extends State<MapsPage> {
           ),
         ),
       );
+      _searchNearbyPlaces("Farmacia", _center);
     } catch (e) {
       print("Error getting current location: $e");
+    }
+  }
+
+  Future<void> _searchNearbyPlaces(String query, LatLng location) async {
+    try {
+      final result = await _places.searchNearbyWithRadius(
+        Location(lat: location.latitude, lng: location.longitude),
+        5000,
+        type: "pharmacy",
+        keyword: query,
+      );
+      if (result.status == "OK") {
+        setState(() {
+          _placesList = result.results;
+        });
+      } else {
+        throw Exception(result.errorMessage);
+      }
+    } catch (e) {
+      print("Error searching nearby places: $e");
     }
   }
 
@@ -85,6 +112,7 @@ class _MapsPageState extends State<MapsPage> {
       body: Stack(
         children: citasWidgets,
       ),
+      
       bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
