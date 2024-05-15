@@ -61,12 +61,13 @@ class _MapsPageState extends State<MapsPage> {
     }
   }
 
-  Future<void> _searchNearbyPlaces(String query, LatLng location) async {
+  _searchNearbyPlaces(String query, LatLng location) async {
     try {
       final result = await _places.searchNearbyWithRadius(
         Location(lat: location.latitude, lng: location.longitude),
         5000,
-        type: "pharmacy",
+        type:
+            "pharmacy", 
         keyword: query,
       );
       if (result.status == "OK") {
@@ -112,7 +113,7 @@ class _MapsPageState extends State<MapsPage> {
       body: Stack(
         children: citasWidgets,
       ),
-      
+
       bottomNavigationBar: MyBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {

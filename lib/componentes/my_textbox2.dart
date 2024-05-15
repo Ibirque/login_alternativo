@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:login_alternativo/paginas/principal.dart';
+import 'package:login_alternativo/componentes/bottom_navigation_bar.dart';
 
 class MyTextBox2 extends StatelessWidget {
   final String texto;
@@ -19,6 +23,39 @@ class MyTextBox2 extends StatelessWidget {
     required this.documentId,
     required this.onPressed,
   }) : super(key: key);
+
+  //Funcion responsable de borrar el documento
+  Future<void> funcionDelete() async {
+    try {
+      // Obtenemos una instancia de Firebase Auth
+      FirebaseAuth auth = FirebaseAuth.instance;
+
+      // Obtenemos el usuario actual
+      User? user = auth.currentUser;
+
+      // Verificamos si el usuario está autenticado
+      if (user != null) {
+        // Obtenemos una instancia de Firestore
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+        // Eliminamos el documento usando su ID
+        await firestore
+            .collection('usuarios')
+            .doc(user.email)
+            .collection('citas')
+            .doc(documentId)
+            .delete();
+
+        // Documento eliminado exitosamente
+        print('Documento eliminado correctamente');
+      } else {
+        print('Usuario no autenticado');
+      }
+    } catch (error) {
+      // Manejo de errores
+      print('Error al eliminar el documento: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +120,7 @@ class MyTextBox2 extends StatelessWidget {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          // Add your delete visit logic here
+                                          funcionDelete();
                                           Navigator.of(context).popUntil(
                                               (route) => route.isFirst);
                                         },

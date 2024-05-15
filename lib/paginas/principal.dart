@@ -22,7 +22,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
   final User? user = FirebaseAuth.instance.currentUser;
   String? _username;
   int _currentIndex = 0;
-  List<Widget> citasWidgets = []; 
+  List<Widget> citasWidgets = [];
 
   @override
   void initState() {
@@ -32,14 +32,19 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
     getCitas();
   }
 
+  //Refrescar pagina
+  Future<void> updateCitasList() async {
+    await getCitas();
+  }
+
   // Función para cargar el nombre de usuario, usamos el id
   Future<void> getUsername() async {
     if (user != null) {
-      DocumentSnapshot<Map<String, dynamic>> userData =
-          await FirebaseFirestore.instance
-              .collection('usuarios')
-              .doc(user!.uid) 
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore
+          .instance
+          .collection('usuarios')
+          .doc(user!.uid)
+          .get();
 
       setState(() {
         _username = userData.data()?['username'];
@@ -83,8 +88,8 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                 notas: cita['notas'],
                 documentId: cita.id,
                 onPressed: () => editfield('username'),
-                
               ),
+              
             );
           });
         });
